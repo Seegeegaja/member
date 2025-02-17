@@ -14,14 +14,19 @@ public class MemberService {
     @Autowired
     MemberRepository memberRepository;
 
-    public List<Member> findAllMembers() {
+    public List<MemberDto> findAllMembers() {
         List<Member> memberList = memberRepository.findAll();
-        List<MemberDto> dtoList = new ArrayList<>();
+//        List<MemberDto> dtoList = new ArrayList<>();
         //Entity class-->DTO class type으로 변경
-        for (int i = 0; i < memberList.size(); i++) {
-            Member member = memberList.get(i);
-
-        }
-        return memberList;
+        return memberList.stream().map(MemberDto::fromEntity).toList();
+//        for (int i = 0; i < memberList.size(); i++) {
+//            MemberDto dto = new MemberDto();
+//            dto.setId(memberList.get(i).getMemberId());
+//            dto.setName(memberList.get(i).getName());
+//            dto.setAge(memberList.get(i).getAge());
+//            dto.setAddress(memberList.get(i).getAddress());
+//            System.out.println("for로 서비스에서 옮겨 가져오는것"+dto);
+//            dtoList.add(dto);
+//        }
     }
 }

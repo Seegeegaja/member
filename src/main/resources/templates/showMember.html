@@ -19,7 +19,7 @@
     </thead>
     <tbody>
     <tr th:each="list , i : ${list}" th:object="${list}">
-        <td th:text="*{memberId}"></td>
+        <td th:text="*{id}"></td>
         <td th:text="*{name}"></td>
         <td th:text="*{age}"></td>
         <td th:text="*{address}"></td>

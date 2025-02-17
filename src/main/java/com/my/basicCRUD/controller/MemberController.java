@@ -33,7 +33,7 @@ public class MemberController {
 
     @GetMapping("view")
     public String showMember(Model model) {
-        List<Member> memberList = memberService.findAllMembers();
+        List<MemberDto> memberList = memberService.findAllMembers();
         System.out.println(memberList);
         model.addAttribute("list", memberList);
         return "showMember";
