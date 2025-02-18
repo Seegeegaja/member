@@ -3,16 +3,20 @@ package com.my.basicCRUD.controller;
 import com.my.basicCRUD.dto.MemberDto;
 import com.my.basicCRUD.entity.Member;
 import com.my.basicCRUD.service.MemberService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/member")
+@Slf4j
 public class MemberController {
     private final MemberService memberService;
 
@@ -21,14 +25,27 @@ public class MemberController {
     }
 
     @GetMapping("/insertForm")
-    public String insertFormView() {
+    public String insertFormView( Model model) {
+        model.addAttribute("memberDto", new MemberDto());
         return "insertMember";
     }
 
     @PostMapping("/insert")
-    public String insert(MemberDto memberDto) {
-        System.out.println(memberDto);
-        return "showMember";
+    public String insert(
+            @Valid MemberDto memberDto,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        //Validation Check 진행
+        if (bindingResult.hasErrors()) {
+            //오류 있을때
+            log.info("=============== validationError");
+            return "insertMember";
+        }
+        System.out.println("insert 에서 찍혀야한느것" + memberDto);
+        //받은 Dto를 서비스에 넘겨주고 저장요청한다
+        memberService.saveMember(memberDto);
+        redirectAttributes.addFlashAttribute("msg", "신규데이터가 입력되었습니다");
+        return "redirect:/member/view";
     }
 
     @GetMapping("view")
@@ -39,4 +56,34 @@ public class MemberController {
         return "showMember";
     }
 
+    @GetMapping("delete/{id}")
+    public String deleteId(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+
+        memberService.deleteById(id);
+        redirectAttributes.addFlashAttribute("msg", "선택한 자료가 삭제되었습니다");
+        return "redirect:/member/view";
+    }
+
+    @GetMapping("update/{id}")
+    public String updateFormView(@PathVariable("id") Long id, Model model) {
+        MemberDto dto = memberService.findByid(id);
+        log.info("===========dto : " + dto);
+        model.addAttribute("member", dto);
+        return "updateMember";
+    }
+
+    @PostMapping("update")
+    public String update(@Valid @ModelAttribute("member") MemberDto memberDto,
+                         BindingResult bindingResult ,
+                         RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "updateMember";
+        }
+        //수정요청
+        log.info("dto update : " + memberDto);
+        memberService.updateMember(memberDto);
+        //메시지 전송
+        redirectAttributes.addFlashAttribute("msg", "정상적으로 수정되었습니다");
+        return "redirect:/member/view";
+    }
 }

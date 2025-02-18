@@ -7,30 +7,37 @@
     <title>Title</title>
 </head>
 <style>
-    span {
-        font-size : 10px;
-        color : red;
+    span{
+     font-size : 10px;
+     color : red;
     }
+
 </style>
 <body>
-<form th:action="@{/member/insert}" method="post" th:object="${memberDto}">
+<form th:action="@{/member/update}" method="post" th:object="${member}">
+    <div>
+<!--        disabled 에 있는건 hidden으로 받아서 하면 된닫-->
+        <label for="id">ID</label>
+        <input type="text" th:field="*{id}" disabled >
+        <input type="hidden" th:field="*{id}">
+    </div>
     <div>
         <label for="name">이름</label>
-        <input type="text" name="name" id="name" th:field="*{name}">
+        <input type="text" th:field="*{name}" id="name">
         <span th:errors="*{name}"></span>
     </div>
     <div>
         <label for="age">나이</label>
-        <input type="text" name="age" id="age" th:field="*{age}">
+        <input type="text" th:field="*{age}" id="age">
         <span th:errors="*{age}"></span>
     </div>
     <div>
         <label for="address">주소</label>
-        <input type="text" name="address" id="address" th:field="*{address}">
+        <input type="text" th:field="*{address}" id="address">
         <span th:errors="*{address}"></span>
     </div>
     <div>
-        <input type="submit" value="등록" id="btnSubmit" >
+        <input type="submit" value="수정">
     </div>
 </form>
 <a th:href="@{/member/view}" align="center">회원정보화면으로 돌아가기 </a>
