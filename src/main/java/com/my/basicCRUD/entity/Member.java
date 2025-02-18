@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+
 //Entity는 데이터베이스의 테이블이다
 @Entity
-@Data
 @Table(name = "member")
-public class Member {
+@Data
+@ToString(callSuper = true)
+public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;

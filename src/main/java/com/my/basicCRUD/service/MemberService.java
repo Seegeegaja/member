@@ -17,6 +17,7 @@ public class MemberService {
 
     public List<MemberDto> findAllMembers() {
         List<Member> memberList = memberRepository.findAll();
+        System.out.println(memberList);
 //        List<MemberDto> dtoList = new ArrayList<>();
         //Entity class-->DTO class type으로 변경
         return memberList.stream().map(MemberDto::fromEntity).toList();
@@ -29,6 +30,7 @@ public class MemberService {
 //            System.out.println("for로 서비스에서 옮겨 가져오는것"+dto);
 //            dtoList.add(dto);
 //        }
+
     }
     public void saveMember(MemberDto memberDto) {
         //DTO -> Entity 로 변화
@@ -58,5 +60,28 @@ public class MemberService {
         //수정처리
         // save() : 해당ID가 존재 하면 수정 , 없으면 입력
         memberRepository.save(member);
+    }
+//DTO에 있는 List 를 Entity로 바꿔서 검색 하는것
+    public List<MemberDto> searchName(String keyword) {
+        return memberRepository.searchName(keyword).stream().map(x -> MemberDto.fromEntity(x)).toList();
+    }
+
+    public List<MemberDto> searchAddress(String keyword) {
+        List<Member> memberList = memberRepository.searchAddress(keyword);
+        List<MemberDto> dtoList = new ArrayList<>();
+        for (int i = 0; i < memberList.size(); i++) {
+            MemberDto dto = new MemberDto(
+                    memberList.get(i).getMemberId(),
+                    memberList.get(i).getName(),
+                    memberList.get(i).getAge(),
+                    memberList.get(i).getAddress()
+            );
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
+
+    public List<MemberDto> searchAll() {
+        return memberRepository.searchAll().stream().map(MemberDto::fromEntity).toList();
     }
 }
